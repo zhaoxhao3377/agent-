@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="智能营销Agent控制面板 - 社交媒体营销自动化管理系统">
+    <title>营销Agent智能控制台 By HAISNAP</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            important: true,
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#E8F4F8',
+                            100: '#D1E9F1',
+                            200: '#A3D3E3',
+                            300: '#75BDD5',
+                            400: '#47A7C7',
+                            500: '#00CED1',
+                            600: '#00A8AA',
+                            700: '#008283',
+                            800: '#005C5C',
+                            900: '#003636',
+                        },
+                        accent: {
+                            50: '#FFF4E6',
+                            100: '#FFE9CC',
+                            200: '#FFD399',
+                            300: '#FFBD66',
+                            400: '#FFA733',
+                            500: '#FF6B35',
+                            600: '#E65A2B',
+                            700: '#CC4921',
+                            800: '#B33817',
+                            900: '#99270D',
+                        }
+                    },
+                    animation: {
+                        'fadeIn': 'fadeIn 0.6s ease-out',
+                        'slideIn': 'slideIn 0.5s ease-out',
+                        'slideInRight': 'slideInRight 0.5s ease-out',
+                        'slideUp': 'slideUp 0.4s ease-out',
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' }
+                        },
+                        slideIn: {
+                            '0%': { transform: 'translateX(-100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideInRight: {
+                            '0%': { transform: 'translateX(100%)', opacity: '0' },
+                            '100%': { transform: 'translateX(0)', opacity: '1' }
+                        },
+                        slideUp: {
+                            '0%': { transform: 'translateY(20px)', opacity: '0' },
+                            '100%': { transform: 'translateY(0)', opacity: '1' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 via-white to-primary-50 min-h-screen">
+    
+    <!-- 顶部导航栏 - 青色系 -->
+    <nav class="navbar sticky top-0 z-50 bg-white/98 backdrop-blur-xl border-b border-primary-100 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-11 h-11 bg-gradient-to-br from-primary-500 to-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
+                        <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-xl font-bold bg-gradient-to-r from-primary-600 to-primary-700 bg-clip-text text-transparent">
+                            营销Agent智能控制台
+                        </h1>
+                        <p class="text-xs text-gray-500">AI-Powered Marketing Automation</p>
+                    </div>
+                </div>
+                
+                <!-- 状态指示器 -->
+                <div class="flex items-center space-x-6">
+                    <div class="flex items-center space-x-2 px-4 py-2 bg-primary-50 rounded-lg">
+                        <span class="relative flex h-3 w-3">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-3 w-3 bg-primary-500"></span>
+                        </span>
+                        <span class="text-sm font-medium text-primary-700">系统运行中</span>
+                    </div>
+                    
+                    <button id="refreshBtn" class="p-2.5 hover:bg-primary-50 rounded-xl transition-all duration-200 group" title="刷新数据">
+                        <svg class="w-5 h-5 text-primary-600 group-hover:rotate-180 transition-transform duration-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主容器 - 左侧主内容 + 右侧固定看板 -->
+    <div class="flex max-w-[1920px] mx-auto relative">
+        
+        <!-- 左侧主内容区域 -->
+        <div class="flex-1 px-4 sm:px-6 lg:px-8 py-8 lg:pr-[380px]">
+            
+            <!-- Tab导航 - 优化样式 -->
+            <div class="mb-10 animate-fadeIn">
+                <div class="flex flex-wrap gap-2 bg-white rounded-2xl p-2 shadow-sm border border-gray-100">
+                    <button data-tab="dashboard" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-lg shadow-primary-500/30">
+                        <span class="text-lg mr-2">📊</span> 控制面板
+                    </button>
+                    <button data-tab="instruction" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 bg-gray-50 text-gray-700 hover:bg-primary-50 hover:text-primary-700">
+                        <span class="text-lg mr-2">🎯</span> 营销指令
+                    </button>
+                    <button data-tab="analysis" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 bg-gray-50 text-gray-700 hover:bg-primary-50 hover:text-primary-700">
+                        <span class="text-lg mr-2">🔍</span> 深度分析
+                    </button>
+                    <button data-tab="campaigns" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 bg-gray-50 text-gray-700 hover:bg-primary-50 hover:text-primary-700">
+                        <span class="text-lg mr-2">📝</span> 活动管理
+                    </button>
+                    <button data-tab="tasks" class="flex-1 min-w-[140px] px-5 py-3 rounded-xl font-semibold text-sm transition-all duration-300 bg-gray-50 text-gray-700 hover:bg-primary-50 hover:text-primary-700">
+                        <span class="text-lg mr-2">📅</span> 任务中心
+                    </button>
+                </div>
+            </div>
+
+            <!-- 控制面板内容 - 两行四列布局 -->
+            <div data-content="dashboard" class="animate-fadeIn">
+                
+                <!-- Agent四层架构模块 - 两行四列网格布局 -->
+                <div class="mb-12">
+                    <div class="text-center mb-8">
+                        <h2 class="text-3xl font-bold text-gray-800 mb-2">Agent 智能架构</h2>
+                        <p class="text-gray-600">四层模块协同工作，驱动智能营销决策</p>
+                    </div>
+                    
+                    <!-- 第一行：前三个模块 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6 relative">
+                        <!-- 模块1: 输入与连接层 -->
+                        <div class="module-card group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-2 cursor-pointer">
+                            <div class="module-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="module-title text-lg font-bold text-gray-800 mb-2 text-center">输入与连接层</h3>
+                            <p class="module-desc text-sm text-gray-600 text-center leading-relaxed">连接社交平台、监控舆情、集成业务系统</p>
+                            <div class="mt-4 flex justify-center">
+                                <span class="status-indicator active"></span>
+                                <span class="text-xs text-gray-500 ml-2">运行中</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 模块2: 核心智能层 -->
+                        <div class="module-card group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-2 cursor-pointer">
+                            <div class="module-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-accent-100 to-accent-200 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                <svg class="w-8 h-8 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="module-title text-lg font-bold text-gray-800 mb-2 text-center">核心智能层</h3>
+                            <p class="module-desc text-sm text-gray-600 text-center leading-relaxed">LLM引擎、数据分析、用户画像</p>
+                            <div class="mt-4 flex justify-center">
+                                <span class="status-indicator active"></span>
+                                <span class="text-xs text-gray-500 ml-2">分析中</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 模块3: 任务执行层 -->
+                        <div class="module-card group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-2 cursor-pointer">
+                            <div class="module-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-primary-100 to-primary-200 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                <svg class="w-8 h-8 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="module-title text-lg font-bold text-gray-800 mb-2 text-center">任务执行层</h3>
+                            <p class="module-desc text-sm text-gray-600 text-center leading-relaxed">内容生成、自动互动、智能排期</p>
+                            <div class="mt-4 flex justify-center">
+                                <span class="status-indicator active"></span>
+                                <span class="text-xs text-gray-500 ml-2">执行中</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 模块4: 输出与报告层 -->
+                        <div class="module-card group bg-white rounded-2xl p-6 border-2 border-gray-100 hover:border-primary-300 transition-all duration-300 hover:shadow-xl hover:shadow-primary-500/10 hover:-translate-y-2 cursor-pointer">
+                            <div class="module-icon w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-accent-100 to-accent-200 rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                <svg class="w-8 h-8 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="module-title text-lg font-bold text-gray-800 mb-2 text-center">输出与报告层</h3>
+                            <p class="module-desc text-sm text-gray-600 text-center leading-relaxed">实时面板、自动报告、配置中心</p>
+                            <div class="mt-4 flex justify-center">
+                                <span class="status-indicator active"></span>
+                                <span class="text-xs text-gray-500 ml-2">监控中</span>
+                            </div>
+                        </div>
+                        
+                        <!-- 橙色连接线 -->
+                        <div class="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 pointer-events-none hidden lg:block">
+                            <div class="process-line absolute inset-0"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- 流程说明 -->
+                    <div class="text-center mt-8 p-4 bg-gradient-to-r from-primary-50 to-accent-50 rounded-xl">
+                        <p class="text-sm text-gray-700">
+                            <span class="font-semibold text-primary-700">数据输入</span> 
+                            <span class="mx-2 text-accent-500">→</span>
+                            <span class="font-semibold text-accent-700">智能分析</span>
+                            <span class="mx-2 text-accent-500">→</span>
+                            <span class="font-semibold text-primary-700">任务执行</span>
+                            <span class="mx-2 text-accent-500">→</span>
+                            <span class="font-semibold text-accent-700">结果输出</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- 数据指标卡片 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="metric-card bg-gradient-to-br from-primary-500 to-primary-600 text-white rounded-2xl p-6 shadow-lg shadow-primary-500/30">
+                        <div class="relative z-10">
+                            <div class="metric-value text-4xl font-bold mb-2">0</div>
+                            <div class="metric-label text-sm opacity-90">营销活动</div>
+                        </div>
+                    </div>
+                    <div class="metric-card bg-gradient-to-br from-accent-500 to-accent-600 text-white rounded-2xl p-6 shadow-lg shadow-accent-500/30">
+                        <div class="relative z-10">
+                            <div class="metric-value text-4xl font-bold mb-2">0</div>
+                            <div class="metric-label text-sm opacity-90">待发布任务</div>
+                        </div>
+                    </div>
+                    <div class="metric-card bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-6 shadow-lg shadow-blue-500/30">
+                        <div class="relative z-10">
+                            <div class="metric-value text-4xl font-bold mb-2">0%</div>
+                            <div class="metric-label text-sm opacity-90">平均互动率</div>
+                        </div>
+                    </div>
+                    <div class="metric-card bg-gradient-to-br from-green-500 to-green-600 text-white rounded-2xl p-6 shadow-lg shadow-green-500/30">
+                        <div class="relative z-10">
+                            <div class="metric-value text-4xl font-bold mb-2">0</div>
+                            <div class="metric-label text-sm opacity-90">总触达人数</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="dashboardContent">
+                    <!-- 数据将通过JavaScript动态加载 -->
+                    <div class="flex items-center justify-center py-20">
+                        <div class="text-center">
+                            <div id="loadingSpinner" class="spinner mx-auto mb-4"></div>
+                            <p class="text-gray-500">加载仪表盘数据中...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 营销指令表单 -->
+            <div data-content="instruction" class="hidden animate-fadeIn">
+                <div class="dashboard-card max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100">
+                    <div class="mb-8">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">🎯</span>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">创建营销指令</h2>
+                                <p class="text-sm text-gray-600">填写产品信息，Agent将自动生成智能营销方案</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="instructionForm" class="space-y-6">
+                        <div>
+                            <label class="form-label text-gray-700 font-semibold mb-2 flex items-center">
+                                产品名称 <span class="text-red-500 ml-1">*</span>
+                            </label>
+                            <input type="text" name="productName" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all" placeholder="例如：产品YYY" required>
+                        </div>
+                        
+                        <div>
+                            <label class="form-label text-gray-700 font-semibold mb-2 flex items-center">
+                                核心卖点 <span class="text-red-500 ml-1">*</span>
+                            </label>
+                            <textarea name="highlights" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all min-h-[120px]" placeholder="例如：快速充电、超长续航、智能识别..." required></textarea>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="form-label text-gray-700 font-semibold mb-2 flex items-center">
+                                    目标受众 <span class="text-red-500 ml-1">*</span>
+                                </label>
+                                <select name="targetAudience" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all" required>
+                                    <option value="">请选择受众群体</option>
+                                    <option value="白领">白领</option>
+                                    <option value="学生">学生</option>
+                                    <option value="家庭主妇">家庭主妇</option>
+                                    <option value="企业主">企业主</option>
+                                    <option value="创业者">创业者</option>
+                                    <option value="科技爱好者">科技爱好者</option>
+                                </select>
+                            </div>
+                            
+                            <div>
+                                <label class="form-label text-gray-700 font-semibold mb-2">产品类别</label>
+                                <select name="productCategory" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all">
+                                    <option value="数码产品">数码产品</option>
+                                    <option value="生活用品">生活用品</option>
+                                    <option value="服装配饰">服装配饰</option>
+                                    <option value="食品饮料">食品饮料</option>
+                                    <option value="美妆护肤">美妆护肤</option>
+                                    <option value="运动健身">运动健身</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="form-label text-gray-700 font-semibold mb-2">计划发布时间</label>
+                            <input type="text" name="publishTime" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-primary-500 focus:ring-4 focus:ring-primary-100 transition-all" placeholder="例如：周四 10:00AM 或 2025-11-01 10:00">
+                        </div>
+                        
+                        <div class="flex justify-end space-x-4 pt-6 border-t border-gray-100">
+                            <button type="button" onclick="document.getElementById('instructionForm').reset()" class="px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-200">
+                                重置
+                            </button>
+                            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-primary-500 to-primary-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-primary-500/30 transition-all duration-200 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                生成营销方案
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 深度分析表单 -->
+            <div data-content="analysis" class="hidden animate-fadeIn">
+                <div class="dashboard-card max-w-4xl mx-auto bg-white rounded-2xl shadow-lg border border-gray-100">
+                    <div class="mb-8">
+                        <div class="flex items-center space-x-3 mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">🔍</span>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">深度营销分析</h2>
+                                <p class="text-sm text-gray-600">获取受众洞察、竞争分析和最佳发布时间预测</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <form id="analysisForm" class="space-y-6">
+                        <div>
+                            <label class="form-label text-gray-700 font-semibold mb-2">目标受众</label>
+                            <select name="analysisAudience" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent-500 focus:ring-4 focus:ring-accent-100 transition-all">
+                                <option value="白领">白领</option>
+                                <option value="学生">学生</option>
+                                <option value="家庭主妇">家庭主妇</option>
+                                <option value="企业主">企业主</option>
+                                <option value="创业者">创业者</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label class="form-label text-gray-700 font-semibold mb-2">产品类别</label>
+                            <select name="analysisCategory" class="form-input w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-accent-500 focus:ring-4 focus:ring-accent-100 transition-all">
+                                <option value="数码产品">数码产品</option>
+                                <option value="生活用品">生活用品</option>
+                                <option value="服装配饰">服装配饰</option>
+                                <option value="食品饮料">食品饮料</option>
+                                <option value="美妆护肤">美妆护肤</option>
+                            </select>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-primary-50 to-accent-50 p-6 rounded-xl border border-primary-100">
+                            <h4 class="font-semibold text-gray-800 mb-4 flex items-center">
+                                <svg class="w-5 h-5 mr-2 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                                </svg>
+                                分析维度
+                            </h4>
+                            <div class="space-y-3">
+                                <label class="flex items-center p-3 bg-white rounded-lg cursor-pointer hover:bg-primary-50 transition-colors">
+                                    <input type="checkbox" checked disabled class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                                    <span class="ml-3 text-sm text-gray-700 font-medium">受众画像与行为洞察</span>
+                                </label>
+                                <label class="flex items-center p-3 bg-white rounded-lg cursor-pointer hover:bg-primary-50 transition-colors">
+                                    <input type="checkbox" checked disabled class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                                    <span class="ml-3 text-sm text-gray-700 font-medium">竞争对手分析</span>
+                                </label>
+                                <label class="flex items-center p-3 bg-white rounded-lg cursor-pointer hover:bg-primary-50 transition-colors">
+                                    <input type="checkbox" checked disabled class="w-5 h-5 text-primary-600 rounded focus:ring-primary-500">
+                                    <span class="ml-3 text-sm text-gray-700 font-medium">最佳发布时间预测</span>
+                                </label>
+                            </div>
+                        </div>
+                        
+                        <div class="flex justify-end pt-6 border-t border-gray-100">
+                            <button type="submit" class="px-6 py-3 bg-gradient-to-r from-accent-500 to-accent-600 text-white rounded-xl font-semibold hover:shadow-lg hover:shadow-accent-500/30 transition-all duration-200 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                开始分析
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- 活动管理内容 -->
+            <div data-content="campaigns" class="hidden animate-fadeIn">
+                <div class="dashboard-card bg-white rounded-2xl shadow-lg border border-gray-100">
+                    <div class="mb-6 flex justify-between items-center">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-primary-100 to-primary-200 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">📝</span>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">营销活动列表</h2>
+                                <p class="text-sm text-gray-600">查看和管理所有营销活动</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="campaignsContent" class="min-h-[400px]">
+                        <!-- 活动列表将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- 任务中心内容 -->
+            <div data-content="tasks" class="hidden animate-fadeIn">
+                <div class="dashboard-card bg-white rounded-2xl shadow-lg border border-gray-100">
+                    <div class="mb-6 flex flex-wrap justify-between items-center gap-4">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-accent-100 to-accent-200 rounded-xl flex items-center justify-center">
+                                <span class="text-2xl">📅</span>
+                            </div>
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800">发布任务管理</h2>
+                                <p class="text-sm text-gray-600">查看和管理所有待发布任务</p>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button class="px-4 py-2 bg-primary-100 text-primary-700 rounded-xl text-sm font-semibold hover:bg-primary-200 transition-all duration-200">
+                                全部任务
+                            </button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-all duration-200">
+                                待发布
+                            </button>
+                            <button class="px-4 py-2 bg-gray-100 text-gray-700 rounded-xl text-sm font-semibold hover:bg-gray-200 transition-all duration-200">
+                                已发布
+                            </button>
+                        </div>
+                    </div>
+                    <div id="tasksContent" class="min-h-[400px]">
+                        <!-- 任务列表将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 右侧固定实时数据看板 -->
+        <div class="hidden lg:block fixed right-0 top-20 w-[360px] h-[calc(100vh-5rem)] overflow-y-auto px-4 py-6 animate-slideInRight">
+            <div class="bg-white rounded-2xl shadow-lg border border-primary-100 sticky top-6">
+                <!-- 区域标题 -->
+                <div class="flex items-center justify-between p-4 border-b border-gray-100">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-8 h-8 bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center">
+                            <svg class="w-4 h-4 text-primary-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-base font-bold text-gray-800">实时数据看板</h3>
+                    </div>
+                    <span class="text-xs text-gray-500">实时更新</span>
+                </div>
+                
+                <div id="summaryScroller" class="p-4">
+                    <!-- 滚动内容将通过JavaScript动态加载 -->
+                    <div class="flex items-center justify-center py-12">
+                        <div class="text-center">
+                            <div class="spinner mx-auto mb-3 border-primary-500"></div>
+                            <p class="text-sm text-gray-500 font-medium">正在加载实时数据...</p>
+                            <p class="text-xs text-gray-400 mt-1">请稍候</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="mainModal" class="modal-overlay hidden fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[9999] p-4">
+        <div class="modal-content bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto">
+            <div class="sticky top-0 bg-white border-b border-gray-100 p-6 flex justify-between items-start z-10">
+                <h3 id="modalTitle" class="text-2xl font-bold text-gray-800"></h3>
+                <button id="modalClose" class="text-gray-400 hover:text-gray-600 transition-colors p-2 hover:bg-gray-100 rounded-lg">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            <div id="modalContent" class="p-6 text-gray-700">
+                <!-- 模态框内容将动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 通知容器 -->
+    <div id="notificationContainer" class="fixed top-20 right-4 z-[9999] max-w-md space-y-3"></div>
+
+    <!-- JavaScript -->
+    <script src="/static/js/script.js"></script>
+</body>
+</html>
